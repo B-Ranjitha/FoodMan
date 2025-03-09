@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Food Delivery</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and main container */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        /* Product list styles */
+        .product {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 15px;
+            width: 300px;
+            display: inline-block;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .product:hover {
+            transform: translateY(-10px);
+        }
+
+        .product h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .product p {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .product .add-to-cart {
+            text-decoration: none;
+            background-color: #e67e22;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .product .add-to-cart:hover {
+            background-color: #d35400;
+        }
+
+        /* Cart summary */
+        .cart-summary {
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            margin: 30px auto 0;
+        }
+
+        .cart-summary h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .cart-items {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        .cart-items li {
+            font-size: 16px;
+            color: #34495e;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-items li button {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .cart-items li button:hover {
+            background-color: #c0392b;
+        }
+
+        #total-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e67e22;
+            text-align: center;
+        }
+
+        /* Responsiveness for smaller screens */
+        @media (max-width: 768px) {
+            .product {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .cart-summary {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Online Food Delivery</h1>
+
+    <!-- Product List -->
+    <div class="product">
+        <img src="images/special-1.png" alt="special" width="180px" height="100px" />
+
+        <h2>Chicken Veg Curry</h2>
+        <p>A flavorful chicken and vegetable curry served with rice.</p>
+        <a href="#" class="add-to-cart" data-item="Chicken Veg Curry" data-price="12">Add to Cart</a>
+    </div>
+
+    <div class="product">
+         <img src="images/special-2.png" alt="special" width="180px" height="100px"  />
+        <h2>Chicken Veg Stir-Fry</h2>
+        <p>Spaghetti pasta with a spicy chicken and vegetable sauce.</p>
+        <a href="#" class="add-to-cart" data-item="Chicken Veg Pasta" data-price="10">Add to Cart</a>
+    </div>
+
+    <div class="product">
+        <img src="images/special-3.png" alt="special"  width="180px" height="100px" />
+        <h2>Chicken Veg Pasta</h2>
+        <p>Stir-fried chicken with vegetables, perfect for a healthy meal.</p>
+        <a href="#" class="add-to-cart" data-item="Chicken Veg Stir-Fry" data-price="11">Add to Cart</a>
+    </div>
+
+    <div class="product">
+       <img src="images/eggBriyani.jpg" alt="special" width="180px" height="100px" />
+
+        <h2>Egg Biryani</h2>
+        <p>Aromatic biryani rice with marinated chicken and spices.</p>
+        <a href="#" class="add-to-cart" data-item="Biryani" data-price="15">Add to Cart</a>
+    </div>
+
+    <div class="product">
+            <img src="images/idli.jpg" alt="special" width="180px" height="100px"  />
+        <h2>Idli</h2>
+        <p>Crispy puris served with dosa and chutney.</p>
+        <a href="#" class="add-to-cart" data-item="Puri Dosa" data-price="7">Add to Cart</a>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary">
+        <h3>Shopping Cart</h3>
+        <ul class="cart-items" id="cart-items"></ul>
+        <p id="total-price">Total: $0</p>
+    </div>
+
+    <script>
+        // Initialize the cart
+        let cart = [];
+
+        // Function to update the cart display
+        function updateCart() {
+            const cartItemsElement = document.getElementById("cart-items");
+            const totalPriceElement = document.getElementById("total-price");
+
+            // Clear the current cart display
+            cartItemsElement.innerHTML = '';
+
+            // Calculate total price and update cart list
+            let total = 0;
+            cart.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.textContent = `${item.name} - $${item.price}`;
+                
+                // Create a remove button for each item
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "Remove";
+                removeButton.addEventListener("click", function() {
+                    removeItemFromCart(index);
+                });
+
+                li.appendChild(removeButton);
+                cartItemsElement.appendChild(li);
+                total += item.price;
+            });
+
+            // Update total price display
+            totalPriceElement.textContent = `Total: $${total}`;
+        }
+
+        // Function to remove an item from the cart
+        function removeItemFromCart(index) {
+            // Remove the item from the cart array
+            cart.splice(index, 1);
+            // Update the cart display
+            updateCart();
+        }
+
+        // Add event listener to all "Add to Cart" links
+        document.querySelectorAll('.add-to-cart').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const itemName = this.getAttribute('data-item');
+                const itemPrice = parseFloat(this.getAttribute('data-price'));
+
+                // Add item to cart
+                cart.push({ name: itemName, price: itemPrice });
+
+                // Update the cart display
+                updateCart();
+            });
+        });
+    </script>
+
+</body>
+</html>
